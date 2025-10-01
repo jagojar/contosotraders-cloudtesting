@@ -1356,6 +1356,9 @@ resource cartsinternalapiacaenv 'Microsoft.App/managedEnvironments@2022-06-01-pr
         internal: true
       }
     }
+    dependesOn: [
+      vnet
+    ]
   }
 
 // aca (internal)
