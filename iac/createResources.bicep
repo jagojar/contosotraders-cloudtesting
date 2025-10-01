@@ -286,18 +286,7 @@ resource kv 'Microsoft.KeyVault/vaults@2022-07-01' = {
       contentType: 'endpoint url (cdn endpoint) of the ui'
       value: cdnprofile_ui2endpoint.properties.hostName
     }
-  }
-
-  // secret
-  resource kv_secretVnetAcaSubnetId 'secrets' =
-    if (deployPrivateEndpoints) {
-      name: kvSecretNameVnetAcaSubnetId
-      tags: resourceTags
-      properties: {
-        contentType: 'subnet id of the aca subnet'
-        value: deployPrivateEndpoints ? vnet.properties.subnets[0].id : ''
-      }
-    }
+  }  
 
   // access policies
   resource kv_accesspolicies 'accessPolicies' = {
@@ -864,7 +853,7 @@ resource deploymentScript2 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
     roleAssignment
   ]
   properties: {
-    azPowerShellVersion: '3.0'
+    azPowerShellVersion: '11.0'
     scriptContent: loadTextContent('./scripts/enable-static-website.ps1')
     retentionInterval: 'PT4H'
     environmentVariables: [
@@ -1757,5 +1746,16 @@ output uiCdnEndpoint string = 'https://${cdnprofile_ui2endpoint.properties.hostN
       properties: {
         contentType: 'endpoint url (fqdn) of the (internal) carts api'
         value: deployPrivateEndpoints ? cartsinternalapiaca.properties.configuration.ingress.fqdn : ''
+      }
+    }
+
+// secret
+  resource kv_secretVnetAcaSubnetId 'secrets' =
+    if (deployPrivateEndpoints) {
+      name: kvSecretNameVnetAcaSubnetId
+      tags: resourceTags
+      properties: {
+        contentType: 'subnet id of the aca subnet'
+        value: deployPrivateEndpoints ? vnet.properties.subnets[0].id : ''
       }
     }
