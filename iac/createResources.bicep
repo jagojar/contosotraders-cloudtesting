@@ -1340,28 +1340,6 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-07-01' =
     }
   }
 
-
-//
-// private dns zone
-//
-
-module privateDnsZone './createPrivateDnsZone.bicep' =
-  if (deployPrivateEndpoints) {
-    name: 'createPrivateDnsZone'
-    params: {
-      privateDnsZoneName: deployPrivateEndpoints
-        ? join(skip(split(cartsinternalapiaca.properties.configuration.ingress.fqdn, '.'), 2), '.')
-        : ''
-      privateDnsZoneVnetId: deployPrivateEndpoints ? vnet.id : ''
-      privateDnsZoneVnetLinkName: privateDnsZoneVnetLinkName
-      privateDnsZoneARecordName: deployPrivateEndpoints
-        ? join(take(split(cartsinternalapiaca.properties.configuration.ingress.fqdn, '.'), 2), '.')
-        : ''
-      privateDnsZoneARecordIp: deployPrivateEndpoints ? cartsinternalapiacaenv.properties.staticIp : ''
-      resourceTags: resourceTags
-    }
-  }
-
 // aca environment (internal)
 resource cartsinternalapiacaenv 'Microsoft.App/managedEnvironments@2022-06-01-preview' =
   if (deployPrivateEndpoints) {
@@ -1462,6 +1440,29 @@ resource cartsinternalapiaca 'Microsoft.App/containerApps@2022-06-01-preview' =
       }
     }
   }
+
+//
+// private dns zone
+//
+
+module privateDnsZone './createPrivateDnsZone.bicep' =
+  if (deployPrivateEndpoints) {
+    name: 'createPrivateDnsZone'
+    params: {
+      privateDnsZoneName: deployPrivateEndpoints
+        ? join(skip(split(cartsinternalapiaca.properties.configuration.ingress.fqdn, '.'), 2), '.')
+        : ''
+      privateDnsZoneVnetId: deployPrivateEndpoints ? vnet.id : ''
+      privateDnsZoneVnetLinkName: privateDnsZoneVnetLinkName
+      privateDnsZoneARecordName: deployPrivateEndpoints
+        ? join(take(split(cartsinternalapiaca.properties.configuration.ingress.fqdn, '.'), 2), '.')
+        : ''
+      privateDnsZoneARecordIp: deployPrivateEndpoints ? cartsinternalapiacaenv.properties.staticIp : ''
+      resourceTags: resourceTags
+    }
+  }
+
+
 
 //
 // chaos studio
