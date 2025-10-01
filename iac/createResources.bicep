@@ -249,27 +249,6 @@ resource kv 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 
   // secret
-  resource kv_secretCartsApiEndpoint 'secrets' = {
-    name: kvSecretNameCartsApiEndpoint
-    tags: resourceTags
-    properties: {
-      contentType: 'endpoint url (fqdn) of the carts api'
-      value: cartsapiaca.properties.configuration.ingress.fqdn
-    }
-  }
-
-  // secret
-  resource kv_secretCartsInternalApiEndpoint 'secrets' =
-    if (deployPrivateEndpoints) {
-      name: kvSecretNameCartsInternalApiEndpoint
-      tags: resourceTags
-      properties: {
-        contentType: 'endpoint url (fqdn) of the (internal) carts api'
-        value: deployPrivateEndpoints ? cartsinternalapiaca.properties.configuration.ingress.fqdn : ''
-      }
-    }
-
-  // secret
   resource kv_secretCartsDbConnStr 'secrets' = {
     name: kvSecretNameCartsDbConnStr
     tags: resourceTags
@@ -1759,3 +1738,24 @@ resource chaosaksexperiment 'Microsoft.Chaos/experiments@2022-10-01-preview' = {
 
 output cartsApiEndpoint string = 'https://${cartsapiaca.properties.configuration.ingress.fqdn}'
 output uiCdnEndpoint string = 'https://${cdnprofile_ui2endpoint.properties.hostName}'
+
+// secret
+  resource kv_secretCartsApiEndpoint 'secrets' = {
+    name: kvSecretNameCartsApiEndpoint
+    tags: resourceTags
+    properties: {
+      contentType: 'endpoint url (fqdn) of the carts api'
+      value: cartsapiaca.properties.configuration.ingress.fqdn
+    }
+  }
+
+  // secret
+  resource kv_secretCartsInternalApiEndpoint 'secrets' =
+    if (deployPrivateEndpoints) {
+      name: kvSecretNameCartsInternalApiEndpoint
+      tags: resourceTags
+      properties: {
+        contentType: 'endpoint url (fqdn) of the (internal) carts api'
+        value: deployPrivateEndpoints ? cartsinternalapiaca.properties.configuration.ingress.fqdn : ''
+      }
+    }
