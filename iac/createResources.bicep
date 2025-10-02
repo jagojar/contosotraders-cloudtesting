@@ -1445,29 +1445,6 @@ resource cartsinternalapiaca 'Microsoft.App/containerApps@2022-06-01-preview' =
   }
 
 //
-// private dns zone
-//
-
-module privateDnsZone './createPrivateDnsZone.bicep' =
-  if (deployPrivateEndpoints) {
-    name: 'createPrivateDnsZone'
-    params: {
-      privateDnsZoneName: deployPrivateEndpoints
-        ? join(skip(split(cartsinternalapiaca.properties.configuration.ingress.fqdn, '.'), 2), '.')
-        : ''
-      privateDnsZoneVnetId: deployPrivateEndpoints ? vnet.id : ''
-      privateDnsZoneVnetLinkName: privateDnsZoneVnetLinkName
-      privateDnsZoneARecordName: deployPrivateEndpoints
-        ? join(take(split(cartsinternalapiaca.properties.configuration.ingress.fqdn, '.'), 2), '.')
-        : ''
-      privateDnsZoneARecordIp: deployPrivateEndpoints ? cartsinternalapiacaenv.properties.staticIp : ''
-      resourceTags: resourceTags
-    }
-  }
-
-
-
-//
 // chaos studio
 //
 
@@ -1768,3 +1745,24 @@ output uiCdnEndpoint string = 'https://${cdnprofile_ui2endpoint.properties.hostN
         value: deployPrivateEndpoints ? vnet.properties.subnets[0].id : ''
       }
     }
+
+//
+// private dns zone
+//
+
+module privateDnsZone './createPrivateDnsZone.bicep' =
+  if (deployPrivateEndpoints) {
+    name: 'createPrivateDnsZone'
+    params: {
+      privateDnsZoneName: deployPrivateEndpoints
+        ? join(skip(split(cartsinternalapiaca.properties.configuration.ingress.fqdn, '.'), 2), '.')
+        : ''
+      privateDnsZoneVnetId: deployPrivateEndpoints ? vnet.id : ''
+      privateDnsZoneVnetLinkName: privateDnsZoneVnetLinkName
+      privateDnsZoneARecordName: deployPrivateEndpoints
+        ? join(take(split(cartsinternalapiaca.properties.configuration.ingress.fqdn, '.'), 2), '.')
+        : ''
+      privateDnsZoneARecordIp: deployPrivateEndpoints ? cartsinternalapiacaenv.properties.staticIp : ''
+      resourceTags: resourceTags
+    }
+  }
