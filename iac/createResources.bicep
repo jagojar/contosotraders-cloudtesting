@@ -1352,7 +1352,7 @@ resource cartsinternalapiacaenv 'Microsoft.App/managedEnvironments@2022-06-01-pr
     properties: {
       zoneRedundant: false
       vnetConfiguration: {
-        infrastructureSubnetId: deployPrivateEndpoints ? vnet.properties.subnets[0].id : ''
+        infrastructureSubnetId: '' // deployPrivateEndpoints ? vnet.properties.subnets[0].id : ''
         internal: true
       }
     }
